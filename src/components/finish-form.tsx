@@ -3,17 +3,28 @@
 import { useActionState, useEffect, useState } from "react";
 import { Loader2, Sparkles, Star } from "lucide-react";
 
-import { finishPostAction, getInitialFinishState } from "@/app/actions";
+import { finishPostAction } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { tasteLabels } from "@/lib/taste";
-import type { TasteKey } from "@/types/app";
+import type { TasteKey, TasteUpdate } from "@/types/app";
+
+type FinishActionState = {
+  ok: boolean;
+  message: string;
+  update?: TasteUpdate;
+};
+
+const initialFinishState: FinishActionState = {
+  ok: false,
+  message: ""
+};
 
 export function FinishForm() {
   const [rating, setRating] = useState(5);
-  const [state, formAction, pending] = useActionState(finishPostAction, getInitialFinishState());
+  const [state, formAction, pending] = useActionState(finishPostAction, initialFinishState);
   const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
@@ -29,13 +40,16 @@ export function FinishForm() {
         </CardTitle>
         <CardDescription>URLと満足度だけで、価値ある時間をTaste DNAに変換します。</CardDescription>
       </CardHeader>
+
       <CardContent className="pt-5">
         <form action={formAction} className="space-y-4">
           <Input name="url" type="url" placeholder="https://..." required />
 
           <input type="hidden" name="rating" value={rating} />
+
           <div className="flex items-center justify-between gap-3 rounded-md border bg-muted/35 p-3">
             <span className="text-sm font-medium">満足度</span>
+
             <div className="flex items-center gap-1" aria-label="満足度">
               {[1, 2, 3, 4, 5].map((value) => (
                 <button
@@ -65,6 +79,7 @@ export function FinishForm() {
           <div className="mt-5 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-emerald-950">
             <p className="font-semibold">Finishしました</p>
             <p className="mt-1 text-sm">Taste DNAが更新されました。Taste Profileも一歩育っています。</p>
+
             <div className="mt-3 flex flex-wrap gap-2">
               {(Object.keys(state.update.delta) as TasteKey[]).map((key) =>
                 state.update?.delta[key] ? (
