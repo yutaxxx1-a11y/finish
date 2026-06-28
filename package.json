@@ -1,3 +1,5 @@
+
+package.json
 {
   "name": "finish",
   "version": "0.1.0",
@@ -6,6 +8,10 @@
     "dev": "next dev",
     "build": "pnpm run diagnose && next build",
     "build:strict": "tsc --noEmit --pretty false && next build",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:deploy": "opennextjs-cloudflare deploy",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "typecheck": "tsc --noEmit --pretty false",
     "diagnose": "tsc --noEmit --pretty false || node -e \"process.exit(0)\"",
     "start": "next start",
@@ -25,6 +31,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "latest",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
@@ -33,6 +40,7 @@
     "eslint-config-next": "^15.3.4",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "wrangler": "latest"
   }
 }
