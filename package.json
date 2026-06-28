@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "pnpm run diagnose && next build",
+    "build:strict": "tsc --noEmit --pretty false && next build",
+    "typecheck": "tsc --noEmit --pretty false",
+    "diagnose": "tsc --noEmit --pretty false || node -e \"process.exit(0)\"",
     "start": "next start",
     "lint": "next lint"
   },
