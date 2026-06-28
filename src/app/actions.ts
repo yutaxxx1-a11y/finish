@@ -7,20 +7,11 @@ import { createClient } from "@/lib/supabase/server";
 import { calculateTasteUpdate, mergeDna } from "@/lib/taste";
 import type { TasteDna, TasteUpdate } from "@/types/app";
 
-export type FinishActionState = {
+type FinishActionState = {
   ok: boolean;
   message: string;
   update?: TasteUpdate;
 };
-
-const initialState: FinishActionState = {
-  ok: false,
-  message: ""
-};
-
-export function getInitialFinishState() {
-  return initialState;
-}
 
 function dnaFromRow(row: Partial<TasteDna> | null | undefined): TasteDna {
   return {
@@ -65,6 +56,7 @@ export async function finishPostAction(_: FinishActionState, formData: FormData)
     }
 
     const { data: existingProfile } = await supabase.from("profiles").select("id").eq("id", user.id).maybeSingle();
+
     if (!existingProfile) {
       await supabase.from("profiles").insert({
         id: user.id,
@@ -140,6 +132,7 @@ async function toggleRelation(table: "likes" | "bookmarks", postId: string) {
   revalidatePath("/");
   revalidatePath("/bookmarks");
   revalidatePath("/search");
+
   return { ok: true };
 }
 
@@ -158,11 +151,14 @@ export async function toggleTastePublicAction(publicValue: boolean) {
   const {
     data: { user }
   } = await supabase.auth.getUser();
+
   if (!user) return { ok: false, message: "ログインが必要です" };
 
   await supabase.from("profiles").update({ taste_profile_public: publicValue }).eq("id", user.id);
+
   revalidatePath("/");
   revalidatePath("/profile/[username]", "page");
   revalidatePath("/profile/[username]/taste", "page");
+
   return { ok: true };
 }
